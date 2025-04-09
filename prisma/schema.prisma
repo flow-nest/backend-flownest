@@ -1,0 +1,110 @@
+// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum RobotStatus {
+  IDLE
+  BUSY
+  MAINTENANCE
+}
+
+enum PackageStatus {
+  PENDING
+  IN_TRANSIT
+  DELIVERED
+  RETURNED
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  username  String   @unique
+  role      UserRole @default(USER)
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Robot {
+  id              String      @id @default(uuid()) @db.Uuid
+  name            String
+  status          RobotStatus
+  battery         Int         @default(100)
+  location        String
+  lastMaintenance DateTime
+  tasks           Task[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@map("robots")
+}
+
+model Package {
+  id        String        @id @default(uuid()) @db.Uuid
+  qrCode    String?       @unique
+  size      Float
+  weight    Float
+  location  String
+  status    PackageStatus @default(PENDING)
+  tasks     Task[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  shelfId   String?       @db.Uuid
+  shelf     Shelves?      @relation(fields: [shelfId], references: [id])
+
+  @@map("packages")
+}
+
+model Shelves {
+  id            String    @id @default(uuid()) @db.Uuid
+  location      String
+  capacity      Int
+  currentLoad   Int       @default(0)
+  accessibility Boolean   @default(true)
+  packages      Package[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("shelves")
+}
+
+model Task {
+  id          String       @id @default(uuid()) @db.Uuid
+  packageId   String       @db.Uuid
+  package     Package      @relation(fields: [packageId], references: [id])
+  robotId     String       @db.Uuid
+  robot       Robot        @relation(fields: [robotId], references: [id])
+  status      TaskStatus   @default(PENDING)
+  priority    TaskPriority @default(MEDIUM)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  completedAt DateTime?
+
+  @@map("tasks")
+}
