@@ -1,10 +1,12 @@
 import express from "express";
 import cors from "cors";
+import robotRouter from "./business-logique/routes/robot.route";
 
-const app = express();
+export const app = express();
 
-app.use(cors({origin: "*"}));
+app.use(cors({ origin: "*" }));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
-export default app;
+app.use("/api", robotRouter);
+
