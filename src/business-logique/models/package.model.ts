@@ -11,7 +11,7 @@ export default class PackageModel {
 
   constructor(
     id: string,
-    qrCode: string,
+    qr_code: string,
     size: number,
     weight: number,
     location: string,
@@ -21,7 +21,7 @@ export default class PackageModel {
     updated_at: Date
   ) {
     this.id = id;
-    this.qrCode = qrCode;
+    this.qrCode = qr_code;
     this.size = size;
     this.weight = weight;
     this.location = location;
@@ -43,8 +43,8 @@ export default class PackageModel {
     return this.qrCode;
   }
 
-  setQrCode(qrCode: string): void {
-    this.qrCode = qrCode;
+  setQrCode(qr_code: string): void {
+    this.qrCode = qr_code;
   }
 
   getSize(): number {
