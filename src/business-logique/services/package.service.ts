@@ -8,7 +8,7 @@ async function createPackage(pkg: PackageModel) {
   try {
     const result = await pool.query(
       `INSERT INTO packages (qr_code, size, weight, location, status, shelf_id) 
-         VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, qr_code, size, weight, location, status, shelf_id, created_at, updated_at`,
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, qr_code, size, weight, location, status, shelf_id, created_at, updated_at`,
       [qrCode, size, weight, location, status, shelf_id]
     );
 
